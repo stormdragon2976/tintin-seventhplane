@@ -1,0 +1,82 @@
+#macro {\cc}
+{
+'\cc
+}
+#macro {\e[OP}
+{
+f01
+}
+#macro {\e[OQ}
+{
+f02
+}
+#macro {\eOR}
+{
+f03
+}
+#macro {\eOS}
+{
+f04
+}
+#macro {\e[15~}
+{
+f05
+}
+#macro {\e[17~}
+{
+f06
+}
+#macro {\e[18~}
+{
+f07
+}
+#macro {\e[19~}
+{
+f08
+}
+#macro {\e[20~}
+{
+f09
+}
+#macro {\e[21~}
+{
+f10
+}
+#macro {\e[23~}
+{
+f11
+}
+#macro {\e[24~}
+{
+f12
+}
+
+#ALIAS {^set{a|b|c|d|e|f|g|h|n|q|r|s|t|v|w|x|y|z|A|D|F|H|Q|W|E} %2}
+{
+#script {macroTmp} {echo "%2" | tr -d '{}'};
+#variable {macroTmp[2]} {%1};
+	#regexp {${macroTmp[1]}} {%*} {#macro {\e${macroTmp[2]}} {&1}};
+	#showme {alt+${macroTmp[2]} has been set to ${macroTmp[1]}\.}
+}
+{9}
+
+#ALIAS {^set{a|b|c|d|e|f|g|h|n|q|r|s|t|v|w|x|y|z|A|D|F|H|Q|W|E}$}
+{
+	#macro {\e%1}
+}
+{9}
+
+#ALIAS {^unset %S}
+{
+	#if {"${%1}" == "true"}
+	{
+		#unvariable {%1};
+		#showme {%1 unset}
+	};
+	#else
+	{
+		#showme {%1 not found.}
+	}
+}
+{9}
+#variable {macroTmp} {}

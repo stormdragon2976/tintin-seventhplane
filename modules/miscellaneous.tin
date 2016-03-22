@@ -1,0 +1,1213 @@
+#ACTION {^silent_You have lost %1 experience points so far due to deaths.$}
+{
+	#variable {lostExp} {%1}
+}
+{1}
+
+#ACTION {^%sYou have been playing a total of %d hours.}
+{
+	#line {gag};
+	#variable {yearCounter} {0};
+	#variable {monthCounter} {0};
+	#variable {weekCounter} {0};
+	#variable {dayCounter} {0};
+	#variable {hourCounter} {%2};
+	#while {$hourCounter > 8759}
+	{
+		#math {yearCounter} {$yearCounter + 1};
+		#math {hourCounter} {$hourCounter - 8760}
+	};
+	#while {$hourCounter > 729}
+	{
+		#math {monthCounter} {$monthCounter + 1};
+		#math {hourCounter} {$hourCounter - 730}
+	};
+	#while {$hourCounter > 167}
+	{
+		#math {weekCounter} {$weekCounter + 1};
+		#math {hourCounter} {$hourCounter - 168}
+	};
+	#while {$hourCounter > 23}
+	{
+		#math {dayCounter} {$dayCounter + 1};
+		#math {hourCounter} {$hourCounter - 24}
+	};
+	#variable {totalHoursMsg} {You have been playing approximately};
+	#if {$yearCounter > 0}
+	{
+		#variable {totalHoursMsg} {$totalHoursMsg $yearCounter years,}
+	};
+	#if {$monthCounter > 0}
+	{
+		#variable {totalHoursMsg} {$totalHoursMsg $monthCounter months,}
+	};
+	#if {$weekCounter > 0}
+	{
+		#variable {totalHoursMsg} {$totalHoursMsg $weekCounter weeks,}
+	};
+	#if {$dayCounter > 0}
+	{
+		#variable {totalHoursMsg} {$totalHoursMsg $dayCounter days and}
+	};
+	#variable {totalHoursMsg} {$totalHoursMsg $hourCounter hours.};
+	#echo {$totalHoursMsg}
+}
+{5}
+
+#ACTION {^You are %1, and currently %2 tall.$}
+{
+	#variable {sex} {%1}
+}
+{5}
+
+#ACTION {^silent_You insult {corpse carcass body|carcass gutted corpse} %S.$}
+{
+	#variable {corpseVnum} {%2};
+	#send {get coins $corpseVnum};
+	#if {"$corpsecutter" == "true"}
+	{
+		harvest components $corpseVnum
+	};
+	#if {"$salvageEquipment" == "true" || &{battleScroll}}
+	{
+		search $corpseVnum | grep -v unique | prefix silent_
+	};
+	#if {"$consume" == "true"}
+	{
+		control all consume $corpseVnum
+	};
+	#if {"$bloodSacrifice" == "true"}
+	{
+		bsac $corpseVnum
+	};
+	#if {"$busy" != "true"}
+	{
+		sac $corpseVnum
+	};
+	#unvariable {corpseVnum}
+}
+{5}
+
+#ACTION {^silent_{Cleric|Druid|Mage|Necromancer} remaining: %2/%3}
+{
+	#if {%2 != %3}
+	{
+		#showme {You have %2 of %3 %1 control points remaining.}
+	}
+}
+{5}
+
+#ACTION {^silent_Your levels are:  Ma %1  Cl %2  Th %3  Wa %4  Nc %5}
+{
+	#variable {mageLevel} {%1};
+	#variable {clericLevel} {%2};
+	#variable {thiefLevel} {%3};
+	#variable {warriorLevel} {%4};
+	#variable {necromancerLevel} {%5}
+}
+{7}
+
+#ACTION {^You are already sound asleep!$}
+{
+	#if {&{autohelp}}
+	{
+		help random
+	};
+	#elseif {"$autodream" == "true"}
+	{
+		dream
+	}
+}
+{8}
+
+#ACTION {^You go to sleep.$}
+{
+	#if {&{autohelp}}
+	{
+		help random
+	};
+	#elseif {"$autodream" == "true"}
+	{
+		dream
+	}
+}
+{8}
+
+#ACTION {^silent_{Evil|Good}{Sun|Mon|Tue|Wed|Thu|Fri|Sat}%s{Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec}%s%d%s%d:%*}
+{
+	#showme {%1 offset:%9}
+}
+{8}
+
+#ACTION {%1 %S {arrived|into view}.$}
+{
+	#if {"$autokill" == "true" && !&{inBattle} && $currentHp > $maxHp / 2 && $currentMana > $maxMana / 3}
+	{
+		#regexp {%1} {{.*} {.*}} {kill &2}
+	}
+}
+{9}
+
+#ACTION {%1 (unique)$}
+{
+	play unique;
+	#if {"$autogetunique" == "true"}
+	{
+		#regexp {%1} {{.*} {.*}} {get &2 corpse;#if {"$autodonateunique" == "true"} {donate &2}};
+		#else
+		{
+			get %1 corpse
+		}
+	}
+}
+{9}
+
+#ACTION {%S is ready to go, but you would be left behind!$}
+{
+	stand
+}
+{9}
+
+#ACTION {^Press <return> or 'cont' to continue, anything else to quit...$}
+{
+	#history {insert} {#cr}
+}
+{9}
+
+#ACTION {^Press return to continue...$}
+{
+	#history {insert} {#cr}
+}
+{9}
+
+#ACTION {^Sleep while fighting?  Are you mad?$}
+{
+	#unvariable {position}
+}
+{9}
+
+#ACTION {^Someone steps on you, and you awake to see warriors locked in mortal combat!$}
+{
+	#unvariable {position}
+}
+{9}
+
+#ACTION {^Would you like to turn on low spam mode? (yes/no): $}
+{
+	#variable {yes}  {#send {yes}}
+}
+{9}
+
+#ACTION {^You are awakened by %1.$}
+{
+	#unvariable {position}
+}
+{9}
+
+#ACTION {^You are now wearing set '%1'.$}
+{
+	show stats | prefix silent_;
+	show clev | prefix silent_
+}
+{9}
+
+#ACTION {^You can't sleep here, there's a battle going on!$}
+{
+	#unvariable {position}
+}
+{9}
+
+#ACTION {^You feel stronger.$}
+{
+	#if {$strCastCounter >= 4}
+	{
+		#variable {strCastCounter} {0}
+	};
+	#else
+	{
+		#math {strCastCounter} {$strCastCounter + 1}
+	};
+	show stats | prefix silent_
+}
+{9}
+
+#ACTION {^You now have %d combat points you can spend.$}
+{
+	#if {&{autocp} && %1 >= ${autocp[2]}}
+	{
+		points buy ${autocp[1]}
+	}
+}
+{9}
+
+#ACTION {^You receive %d gambling gold!$}
+{
+	#if {!&{autogamble}}
+	{
+		#line {gag};
+		#showme {%0 (You can automatically spend gambling gold by typing autogamble gametype where gametype is merchant or slots.)}
+	};
+	#else
+	{
+		gamble $autogamble %1;
+		Add_Event You spent %1 gambling gold.
+	}
+}
+{9}
+
+#ACTION {^You {hold|wear|wield}%*}
+{
+	show stats | prefix silent_;
+	show clev | prefix silent_
+}
+{9}
+
+#ACTION {^Your fingers quickly become more nimble as magic flows through you.$}
+{
+	#if {$dexCastCounter >= 4}
+	{
+		#variable {dexCastCounter} {0}
+	};
+	#else
+	{
+		#math {dexCastCounter} {$dexCastCounter + 1}
+	};
+	show stats | prefix silent_
+}
+{9}
+
+#ACTION {^Your {chr|con|dex|int|str|wis} increases%*}
+{
+	show stats | prefix silent_
+}
+{9}
+
+#ACTION {^junk_You drop %*.$}
+{
+	sac $junkItem #unvariable {junkItem}
+}
+{9}
+
+#ACTION {^junk_You insult %1 %S.$}
+{
+	drop %2 | prefix junk_;
+	#variable {junkItem} {%2}
+}
+{9}
+
+#ACTION {^scrollcounter_(%s%d)%*}
+{
+	#if {%2 != 1}
+	{
+		#variable {msg} {%2 ${battleScroll}s remaining.}
+	};
+	#else
+	{
+		#variable {msg} {%2 ${battleScroll} remaining.}
+	};
+	Add_Event $msg;
+	#showme {$msg};
+	#unvariable {result}
+}
+{9}
+
+#ACTION {^silent_%*$battleScroll}
+{
+	get $battleScroll corpse;
+	put $battleScroll $container
+}
+{9}
+
+#ACTION {^silent_Improving '%1' requires %d points.$}
+{
+	#variable {autocp[1]} {%1};
+	#variable {autocp[2]} {%2};
+	#showme {You are spending %2 combat points automatically to improve %1.}
+}
+{9}
+
+#ACTION {^silent_No spell or skill by that name found.$}
+{
+	#showme {^No spell or skill by that name found. Autocp not changed.}
+}
+{9}
+
+#ACTION {^silent_Nothing is currently on the auction block.$}
+{
+	#showme {Nothing is currently on the auction block.}
+}
+{9}
+
+#ACTION {^silent_You are casting at level %d mage, level %d cleric, level %d necromancer, level %d druid%*}
+{
+	#if {&{mageClev} && $mageClev != %1}
+	{
+		#showme {You are now casting at level %1 mage.}
+	};
+	#if {&{clericClev} && $clericClev != %2}
+	{
+		#showme {You are now casting at level %2 cleric.}
+	};
+	#if {&{necromancerClev} && $necromancerClev != %3}
+	{
+		#showme {You are now casting at level %3 necromancer.}
+	};
+	#if {&{druidClev} && $druidClev != %4}
+	{
+		#showme {You are now casting at level %4 druid.}
+	};
+	#variable {mageClev} {%1};
+	#variable {clericClev} {%2};
+	#variable {necromancerClev} {%3};
+	#variable {druidClev} {%4}
+}
+{9}
+
+#ACTION {^silent_You currently gain %1 hitpoints, %2 mana, and %3 movement while {standing|sleeping|sitting}.$}
+{
+	#math {hpRegenTime} {($maxHp - $currentHp) / %1};
+	#math {mnRegenTime} {($maxMana - $currentMana) / %2};
+	#math {mvRegenTime} {($maxMv - $currentMv) / %3};
+	#delay {0.1} {#variable {regenTime} {$hpRegenTime};#if {$mnRegenTime > $regenTime}{#variable {regenTime} {$mnRegenTime}}; #if {$mvRegenTime > $regenTime}{#variable {regenTime} {$mvRegenTime}};#if {$regenTime > 0}{#showme {Approximately $regenTime ticks until regeneration is complete.}}}
+}
+{9}
+
+#ACTION {^silent_You have %1/%2 str, %3/%4 int, %5/%6 wis, %7/%8 dex, %9/%10 con, and %11/%12 chr.$}
+{
+	#if {&{strBonus} && $strBonus != %1}
+	{
+		#if {$strBonus < 30 && $strCastCounter < 4 && "$autostrength" == "true"}
+		{
+			#delay {0.2} {c strength}
+		};
+		#else
+		{
+			#showme {You now have %1 of %2 strength.}
+		}
+	};
+	#if {&{intBonus} && $intBonus != %3}
+	{
+		#showme {You now have %3 of %4 intelligence.}
+	};
+	#if {&{wisBonus} && $wisBonus != %5}
+	{
+		#showme {You now have %5 of %6 wisdom.}
+	};
+	#if {&{dexBonus} && $dexBonus != %7}
+	{
+		#if {$dexBonus < 30 && $dexCastCounter < 4 && "$autodexterity" == "true"}
+		{
+			#delay {0.2} {c dexterity}
+		};
+		#else
+		{
+			#showme {You now have %7 of %8 dexterity.}
+		}
+	};
+	#if {&{conBonus} && $conBonus != %9}
+	{
+		#showme {You now have %9 of %10 constitution.}
+	};
+	#if {&{chrBonus} && $chrBonus != %11}
+	{
+		#showme {You now have %11 of %12 charisma.}
+	};
+	#variable {strBonus} {%1};
+	#variable {str} {%2};
+	#variable {intBonus} {%3};
+	#variable {int} {%4};
+	#variable {wisBonus} {%5};
+	#variable {wis} {%6};
+	#variable {dexBonus} {%7};
+	#variable {dex} {%8};
+	#variable {conBonus} {%9};
+	#variable {con} {%10};
+	#variable {chrBonus} {%11};
+	#variable {chr} {%12}
+}
+{9}
+
+#ACTION {^silent_You {become|learn}%2}
+{
+	#showme {You %1%2}
+}
+{9}
+
+#ACTION {^silent_Your name is %S, and your fight string is %2.$}
+{
+	#showme {kxwt_myname %1}
+}
+{9}
+
+#ACTION {^silent_brag_%wYou have died %d times to mobs.$}
+{
+	%1 I have died %2 times to mobs.
+}
+{9}
+
+#ACTION {^{silent_You|You} can train to get a practice, at a cost of %d experience each.$}
+{
+	#variable {buyPracticeExperience} {%2}
+}
+{9}
+
+#ALIAS {^{rest|si|sit}$}
+{
+	#variable {position} {rest};
+	#send {rest};
+	show regen | prefix silent_
+}
+{A 9}
+
+#ALIAS {^{f|fl|fle|flee}$}
+{
+	run
+}
+{1}
+
+#ALIAS {^autostore %S}
+{
+	#variable {soulstoneContainer} {%1};
+	#variable {autostore} {true};
+	#showme {You will now put soulstones in your $soulstoneContainer\.}
+}
+{5}
+
+#ALIAS {^autostore$}
+{
+	#unvariable {soulstoneContainer};
+	#variable {autostore} {true};
+	#showme {You will now put soulstones in your $container.}
+}
+{6}
+
+#ALIAS {^hands %1}
+{
+	#if {"$burningHands" == "true"}
+	{
+		c burning hands %1
+	};
+	#if {"$shockingGrasp" == "true"}
+	{
+		c shocking grasp %1
+	};
+	#if {"$sacredTouch" == "true"}
+	{
+		c sacred touch %1
+	};
+	#if {"$sickeningTouch" == "true"}
+	{
+		c sickening touch %1
+	}
+}
+{8}
+
+#ALIAS {^rsoc %1}
+{
+	#list {socials} {size} {i};
+	#math {i} {1d$i};
+	#showme {${socials[$i]} %1};
+	${socials[$i]} %1
+}
+{8}
+
+#ALIAS {^%ddo %2}
+{
+	#regexp {%2} {{.*} {.*}} {#loop {1} {%1} {i} {&1 $i\.&2}};
+	#else
+	{
+		#loop {1} {%1} {i}
+		{
+			$i\.%2
+		}
+	}
+}
+{9}
+
+#ALIAS {^:q!$}
+{
+	#nop {quit without saving};
+	stop_background_music;
+	#send {quit};
+	#delay {1.5} {#end}
+}
+{9}
+
+#ALIAS {^:wq$}
+{
+	#nop {Save and quit};
+	quit;
+	#delay {1.5} {#end}
+}
+{9}
+
+#ALIAS {^autobuypractice$}
+{
+	#showme {You will now automatically spend experience to buy practices.};
+	train | grep -i You can train to get a practice | prefix silent_;
+	#variable {autobuypractice} {true}
+}
+{9}
+
+#ALIAS {^autocp %1}
+{
+	points value %1 | prefix silent_
+}
+{9}
+
+#ALIAS {^autodream$}
+{
+	#variable {autodream} {true};
+	#showme {Welcome to the world of dreams.}
+}
+{9}
+
+#ALIAS {^autogamble %S}
+{
+	#if {"%1" == "{merchant|slots}"}
+	{
+		#variable {autogamble} {%1};
+		#showme {You will now automatically spend gambling gold on the %1 game. Good luck!}
+	};
+	#else
+	{
+		#showme {Invalid game type chosen. Choices are merchant or slots.}
+	}
+}
+{9}
+
+#ALIAS {^autogamble$}
+{
+	#if {&{autogamble}}
+	{
+		#showme {You are betting your gold on the $autogamble game automatically.}
+	};
+	#else
+	{
+		#showme {You are not currently automatically gambling with gambling gold. To start type autogamble gametype where gametype is either merchant or slots.}
+	}
+}
+{9}
+
+#ALIAS {^autohelp$}
+{
+	#variable {autohelp} {true};
+	#showme {You will now see random help files when you sleep.}
+}
+{9}
+
+#ALIAS {^autokill$}
+{
+	#variable {autokill} {true};
+	#showme {Auttokill enabled.}
+}
+{9}
+
+#ALIAS {^automap$}
+{
+	#showme {Automap on.};
+	#variable {automap} {true};
+	#gag {^Map Scale -%*};
+	#gag {^You are standing {in|on}%*}
+}
+{9}
+
+#ALIAS {^autoregen$}
+{
+	#variable {autoregen} {true};
+	#showme {You will now regen when your group leader does.}
+}
+{9}
+
+#ALIAS {^autothank$}
+{
+	#variable {autothank} {true};
+	#showme {You will now thank people for newbie gifts automatically.}
+}
+{9}
+
+#ALIAS {^auto{dexterity|strength}$}
+{
+	#variable {%0} {true};
+	#echo {%0 enabled}
+}
+{9}
+
+#ALIAS {^cont{a|ai|ain|aine|ainer} %S$}
+{
+	#showme {Container set to %2.};
+	#variable {container} {%2}
+}
+{9}
+
+#ALIAS {^cspam$}
+{
+	#variable {cspam} {true};
+	#showme {Client side spam filters applied.}
+}
+{9}
+
+#ALIAS {^getup$}
+{
+	\stand
+}
+{9}
+
+#ALIAS {^hands$}
+{
+	#if {"$burningHands" == "true"}
+	{
+		c burning hands
+	};
+	#if {"$shockingGrasp" == "true"}
+	{
+		c shocking grasp
+	};
+	#if {"$sacredTouch" == "true"}
+	{
+		c sacred touch
+	};
+	#if {"$sickeningTouch" == "true"}
+	{
+		c sickening touch
+	}
+}
+{9}
+
+#ALIAS {^noautobuypractice$}
+{
+	#showme {You will no longer automatically buy practices.};
+	#unvariable {autobuypractice}
+}
+{9}
+
+#ALIAS {^noautodream$}
+{
+	#unvariable {autodream};
+	#showme {As you decide to stop dreaming, you hear a snort and think you see the misty form of a nightmare vanishing into the distance.}
+}
+{9}
+
+#ALIAS {^noautogamble$}
+{
+	#unvariable {autogamble};
+	#showme {automatic gambling gold gambling disabled.}
+}
+{9}
+
+#ALIAS {^noautohelp$}
+{
+	#unvariable {autohelp};
+	#showme {You will no longer see random help files when you sleep.}
+}
+{9}
+
+#ALIAS {^noautokill$}
+{
+	#unvariable {autokill};
+	#showme {Auttokill disabled.}
+}
+{9}
+
+#ALIAS {^noautomap$}
+{
+	#showme {Automap off.};
+	#unvariable {automap};
+	#ungag {^Map Scale -%*};
+	#ungag {^You are standing {in|on}%*}
+}
+{9}
+
+#ALIAS {^noautoregen$}
+{
+	#unvariable {autoregen};
+	#showme {You will no longer automatically regen when your group leader does.}
+}
+{9}
+
+#ALIAS {^noautothank$}
+{
+	#unvariable {autothank};
+	#showme {You will no longer thank people for newbie gifts automatically.}
+}
+{9}
+
+#ALIAS {^nocspam$}
+{
+	#unvariable {cspam};
+	#showme {Client side spam filters disabled.}
+}
+{9}
+
+#ALIAS {^nopfile$}
+{
+	#unvariable {personalFile};
+	#showme {personal file variable cleared.}
+}
+{9}
+
+#ALIAS {^nopkmode$}
+{
+	#unvariable {pkMode};
+	#showme {PK mode disabled.}
+}
+{9}
+
+#ALIAS {^no{autodexterity|autostrength}$}
+{
+	#unvariable {%1};
+	#echo {%1 disabled.}
+}
+{9}
+
+#ALIAS {^of{f|fs|fse|fset|fsets}$}
+{
+	who -level | grep Gold offset:;
+	graph 2 | head -n 7 | tail -n 2 | prefix silent_Good;
+	graph 3 | head -n 7 | tail -n 2 | prefix silent_Evil
+}
+{9}
+
+#ALIAS {^pfile %1}
+{
+	#variable {personalFile} {%1};
+	#class {personal} {read} {$personalFile};
+	#showme {loading $personalFile}
+}
+{9}
+
+#ALIAS {^pkmode$}
+{
+	#variable {pkMode} {true};
+	#showme {PK mode activated.}
+}
+{9}
+
+#ALIAS {^repop %S}
+{
+	#if {"%1" == "clear" && "$mobRepop" != "false"}
+	{
+		#variable {mobRepop} {false};
+		#showme {You are no longer waiting for anything to repop.}
+	};
+	#else
+	{
+		#variable {mobRepop} {%1};
+		#showme {Waiting for %1 to repop...}
+	}
+}
+{9}
+
+#ALIAS {^repop$}
+{
+	#if {&{mobRepop} && "$mobRepop" != "false"}
+	{
+		#showme {You are waiting for $mobRepop to repop.}
+	};
+	#else
+	{
+		#showme {You are not currently waiting for anything to repop.}
+	}
+}
+{9}
+
+#ALIAS {^rsoc$}
+{
+	#list {socials} {size} {i};
+	#math {i} {1d$i};
+	#showme {${socials[$i]}};
+	${socials[$i]}
+}
+{9}
+
+#ALIAS {^track %1}
+{
+	#variable {tracking} {%1};
+	#showme {You are now tracking.}
+}
+{9}
+
+#ALIAS {^track$}
+{
+	#unvariable {tracking};
+	#showme {You are no longer tracking.}
+}
+{9}
+
+#ALIAS {^x$}
+{
+	insult corpse | prefix silent_
+}
+{9}
+
+#ALIAS {^yes$}
+{
+	#if {"$yes" != "false"}
+	{
+		$yes;
+		#variable {yes} {false}
+	};
+	#else
+	{
+		#showme {There is currently nothing in the prompt queue.}
+	}
+}
+{9}
+
+#ALIAS {^{auto|noauto}cp$}
+{
+	#if {"%0" == "autocp"}
+	{
+		#if {&{autocp}}
+		{
+			#showme {You are spending ${autocp[2]} combat points automatically to improve ${autocp[1]}\.}
+		};
+		#else
+		{
+			#showme {Autocp is not set.}
+		}
+	};
+	#else
+	{
+		#unvariable {autocp};
+		#showme {Autocp cleared.}
+	}
+}
+{9}
+
+#ALIAS {^{auto|noauto}{donate|get}unique$}
+{
+	#switch {"%0"}
+	{
+		#case {"autogetunique"}
+		{
+			#variable {%0} {true};
+			#variable {autodonateunique} {true};
+			#showme {You will automatically loot unique items from corpses.}
+		};
+		#case {"autodonateunique"}
+		{
+			#variable {%0} {true};
+			#variable {autogetunique} {true};
+			#showme {You will automatically loot unique items from corpses and then donate them.}
+		};
+		#default
+		{
+			#variable {autogetunique} {false};
+			#variable {autodonateunique} {false};
+			#showme {You will no longer automatically loot unique items from corpses.}
+		}
+	}
+}
+{9}
+
+#ALIAS {^{bra|brag|sh|sho|show} {md|mde|mdea|mdeat|mdeath}$}
+{
+	whoami | grep times to mobs.
+}
+{9}
+
+#ALIAS {^{bra|brag} %s%w %s{md|mde|mdea|mdeat|mdeath}$}
+{
+	whoami | grep times to mobs. | prefix silent_brag_%3
+}
+{9}
+
+#ALIAS {^{clock|noclock}$}
+{
+	#if {"%0" == "clock"}
+	{
+		#variable {clock} {true};
+		#showme {Hourly chimes enabled.}
+	};
+	#else
+	{
+		#unvariable {clock};
+		#showme {Hourly chimes disabled.}
+	}
+}
+{9}
+
+#ALIAS {^{cp|combatpoints}$}
+{
+	points | grep available to spend.
+}
+{9}
+
+#ALIAS {^{c|qc}save$}
+{
+	#unvariable {play_%*};
+	#class {gameData} {write} {$gameDataPath};
+	#if {"%0" == "csave"}
+	{
+		#showme {saving game data for $name\.}
+	}
+}
+{9}
+
+#ALIAS {^{fam|fame}$}
+{
+	show fame
+}
+{9}
+
+#ALIAS {^{g|ge|get|gi|giv|give|p|pu|put} %2 %S$}
+{
+	#if {!&{container} && "%1" == "{p|pu|put}"}
+	{
+		#variable {container} {%3}
+	};
+	#variable {i} {%2};
+	#replace {i} {,} {;};
+	#forall {$i} {#send {%1 &0 %3}}
+}
+{9}
+
+#ALIAS {^{loa|load}$}
+{
+	spells;
+	#cr;
+	#cr;
+	#cr;
+	#cr;
+	whoami | grep -i tall.;
+	skills;
+	#cr;
+	#cr;
+	#cr;
+	#cr;
+	#cr;
+	show stats | prefix silent_;
+	show clev | prefix silent_
+}
+{9}
+
+#ALIAS {^{mi|min|mini|minio|minion|minions}$}
+{
+	#send {minions};
+	control | grep -i remaining | prefix silent_
+}
+{9}
+
+#ALIAS {^{noaudio|audio}tick$}
+{
+	#if {"%0" == "audiotick"}
+	{
+		#variable {audioTick} {true};
+		#showme {Tick markers will now be audio only.}
+	};
+	#else
+	{
+		#unvariable {audioTick};
+		#showme {Tick markers will now be displayed normally.}
+	}
+}
+{9}
+
+#ALIAS {^{noscro|noscrol|noscroll}$}
+{
+	#unvariable {battleScroll};
+	#showme {Battle scroll cleared.}
+}
+{9}
+
+#ALIAS {^{pracs|practices}$}
+{
+	show practices
+}
+{9}
+
+#ALIAS {^{scan|sca} {d|do|dow|down}$}
+{
+	\scan | grep -i down
+}
+{9}
+
+#ALIAS {^{scan|sca} {e|ea|eas|east}$}
+{
+	\scan | grep -i east
+}
+{9}
+
+#ALIAS {^{scan|sca} {n|no|nor|north}$}
+{
+	\scan | grep -i north
+}
+{9}
+
+#ALIAS {^{scan|sca} {s|so|sou|sout|south}$}
+{
+	\scan | grep -i south
+}
+{9}
+
+#ALIAS {^{scan|sca} {u|up}$}
+{
+	\scan | grep -i up
+}
+{9}
+
+#ALIAS {^{scan|sca} {w|we|wes|west}$}
+{
+	\scan | grep -i west
+}
+{9}
+
+#ALIAS {^{scro|scrol|scroll} %1}
+{
+	#variable {battleScroll} {%1};
+	#showme {You can now use alt+backslash to use get the %1 from your container and use it.}
+}
+{9}
+
+#ALIAS {^{scro|scrol|scroll}$}
+{
+	#if {!&{battleScroll}}
+	{
+		#showme {You don't have a battle scroll set. To set it type scroll and the item you want to use, E.g. scroll potion.}
+	};
+	#else
+	{
+		#regexp {$battleScroll} {{.*} {.*}} {l in $container &2 | prefix scrollcounter_};
+		#else
+		{
+			l in $container $battleScroll | prefix scrollcounter_
+		}
+	}
+}
+{9}
+
+#ALIAS {^{sl|sle|slee|sleep}$}
+{
+	#variable {position} {sleep};
+	#send {sleep};
+	show regen | prefix silent_
+}
+{9}
+
+#ALIAS {^{wa|wak|wake|stan|stand}$}
+{
+	#unvariable {position};
+	#send {%0}
+}
+{9}
+
+#ALIAS {autorefresh}
+{
+	#variable {autorefresh} {true};
+	#showme {You will automaticaly cast refresh spells if your MV is low.}
+}
+{9}
+
+#ALIAS {cconf %1}
+{
+	#if {!&{%1}}
+	{
+		#showme {%1 false}
+	};
+	#else
+	{
+		#showme {%1 $%1}
+	}
+}
+{9}
+
+#ALIAS {g}
+{
+	#send {get all corpse}
+}
+{9}
+
+#ALIAS {junk %1}
+{
+	insult ?%1 -inventory | prefix junk_
+}
+{9}
+
+#ALIAS {lic}
+{
+	look in corpse
+}
+{9}
+
+#ALIAS {noautorefresh}
+{
+	#variable {autorefresh} {false};
+	#showme {You will no longer automaticaly cast refresh spells.}
+}
+{9}
+
+#ALIAS {noautostore}
+{
+	#unvariable {autostore};
+	#showme {You will no longer autostore anything.}
+}
+{9}
+
+#ALIAS {repeat %1}
+{
+	replay | grep -i %1
+}
+{9}
+
+#ALIAS {rm}
+{
+	remove
+}
+{9}
+
+#ALIAS {skill %1}
+{
+	skills | grep -i %1
+}
+{9}
+
+#GAG              {^You don't see anything named 'coins' in the corpse of %1.$}
+#GAG              {^junk_You insult%*}
+#GAG              {^mobrepop_%*}
+#GAG              {^scrollcounter_%*}
+#GAG              {^silent_%*}
+#MACRO {\e }
+{
+	#if {"$bufferLock" == "off"}
+	{
+		#variable {bufferLock} {on}
+	};
+	#else
+	{
+		#variable {bufferLock} {off}
+	};
+	#showme {Buffer lock $bufferLock\.};
+	#buffer {lock}
+}
+
+#MACRO {\e\}
+{
+	#regexp {$battleScroll} {{.*} {.*}} {get $battleScroll $container;use &2;l in $container &2 | prefix scrollcounter_};
+	#else
+	{
+		get $battleScroll $container;
+		use $battleScroll;
+		l in $container $battleScroll | prefix scrollcounter_
+	}
+}
+
+#SUBSTITUTE       {MOV_REGEN}  {MOVE_REGEN}  {5}
+#SUBSTITUTE       {^%sjunk_%2}  { %2}  {5}
+#SUBSTITUTE       {^junk_%1}  {%1}  {5}
+#SUBSTITUTE       {tracking_[%1] }  {}  {5}
+#TICKER           {historyWriter}  {#if {&{name} && "$operatingSystem" != "Darwin"} {#history {write} {$historyPath}}}                                                          {5}
+#VARIABLE         {autodonateunique}  {false}
+#VARIABLE         {autogetunique}  {false}
+#VARIABLE         {autokill}  {}
+#VARIABLE         {bufferLock}  {off}
+#VARIABLE         {castTankMinion}  {true}
+#VARIABLE         {dexCastCounter}  {4}
+#VARIABLE         {lastHpAlert}  {}
+#VARIABLE         {lostExp}  {}
+#VARIABLE         {mobRepop}  {false}
+#VARIABLE         {msg}  {}
+#VARIABLE         {playerSex}  {}
+#VARIABLE         {socials}  {{232{}{shun}{233}{sigh}{234}{sing}{235}{sith}{236}{skip}{237}{slam}{238}{slap}{239}{smack}{240}{smile}{241}{smirk}{242}{smoke}{243}{smooch}{244}{snap}{245}{snarl}{246}{sneer}{247}{sneeze}{248}{snicker}{249}{sniff}{250}{snifle}{251}{snod}{252}{snore}{253}{snort}{254}{snowball}{255}{snuggle}{256}{spammm}{257}{spank}{258}{spin}{259}{spit}{260}{spock}{261}{squat}{262}{ssnod}{263}{stalk}{264}{stare}{265}{steam}{266}{stefen}{267}{stomp}{268}{stoned}{269}{stretch}{270}{strip}{271}{strut}{272}{suicide}{273}{suspect}{274}{tackle}{275}{tapp}{276}{thank}{277}{threaten}{278}{tickles}{279}{tmi}{280}{torture}{281}{tweak}{282}{twiddle}{283}{twirl}{284}{twitch}{285}{uh}{286}{valley}{287}{vegetate}{288}{view}{289}{violin}{290}{waffles}{291}{wave}{292}{wedgie}{293}{whap}{294}{whimper}{295}{whine}{296}{whistle}{297}{whittle}{298}{wibble}{299}{wiggle}{300}{willy}{301}{wince}{302}{wink}{303}{worship}{304}{wrestle}{304}{wrinkle}{305}{wrist}{306}{wtf}{307}{xxp}{308}{yawn}{309}{zerbert}}{}{1}{ack}{2}{agree}{3}{ahha}{4}{angel}{5}{apologize}{6}{argh}{7}{arr}{8}{babble}{9}{backslap}{10}{bahumbug}{11}{bap}{12}{barf}{13}{bark}{14}{beam}{15}{bear}{16}{beckon}{17}{beer}{18}{beg}{19}{bellyache}{20}{bkiss}{21}{blah}{22}{blarg}{23}{blink}{24}{blog}{25}{blonde}{26}{blush}{27}{boggle}{28}{bonk}{29}{boogie}{30}{bop}{31}{bored}{32}{boss}{33}{bounce}{34}{bow}{35}{brb}{36}{brit}{37}{burp}{38}{button}{39}{bye}{40}{cackle}{41}{caress}{42}{cartwheel}{43}{cheer}{44}{chip}{45}{chortle}{46}{chuckle}{47}{clap}{48}{code}{49}{coffee}{50}{coinflip}{51}{comfort}{52}{confused}{53}{cough}{54}{cower}{55}{cringe}{56}{cry}{57}{cuddle}{58}{curl}{59}{curse}{60}{curtsy}{61}{dance}{62}{daydream}{63}{devil}{64}{discodance}{65}{doh}{66}{drool}{67}{drunk}{68}{duck}{69}{eegrin}{70}{eemo}{71}{egrin}{72}{embrace}{73}{eyebrow}{74}{facepalm}{75}{faint}{76}{fandango}{77}{fart}{78}{flex}{79}{flip}{80}{flirt}{81}{flush}{82}{flutter}{83}{fondle}{84}{freak}{85}{fremen}{86}{french}{87}{frown}{88}{ftf}{89}{gamlin}{90}{gasp}{100}{gauntlet}{101}{giggle}{102}{glare}{103}{goat}{104}{goddamnit}{105}{gorilla}{106}{goth}{107}{grab}{108}{greet}{109}{grimace}{110}{grin}{112}{groan}{113}{grope}{114}{growl}{115}{grumble}{116}{grunt}{117}{gurgle}{118}{hack}{119}{hair}{120}{handshake}{121}{hate}{122}{headbang}{123}{headlock}{124}{heil}{125}{hiccup}{126}{highfive}{127}{hiss}{128}{hmm}{129}{honk}{130}{hop}{131}{howl}{132}{hrm}{133}{hug}{134}{huge}{135}{hum}{136}{hump}{137}{hurf}{138}{innocent}{139}{insane}{140}{island}{141}{jedi}{142}{jello}{143}{jigg}{144}{kanook}{145}{kiss}{146}{kneel}{147}{lag}{148}{lalala}{149}{laugh}{150}{laundry}{151}{lick}{152}{make}{153}{meow}{154}{miss}{155}{mmk}{156}{mml}{157}{moan}{158}{mole}{159}{moon}{160}{mooo}{161}{mutter}{162}{nanook}{163}{nerd}{164}{nibble}{165}{ninethousand}{166}{nod}{167}{noodle}{168}{nowthan}{169}{nudge}{170}{nuzzle}{171}{ogg}{172}{orly}{173}{oz}{174}{pace}{175}{pancake}{176}{pant}{177}{pat}{178}{patriot}{179}{peck}{180}{peer}{181}{pervert}{182}{pet}{183}{pie}{184}{pimp}{185}{pinch}{186}{pointat}{187}{poke}{188}{ponder}{189}{pounce}{190}{pout}{191}{powertrip}{192}{prance}{193}{preach}{194}{propose}{195}{protectinate}{196}{puke}{197}{punt}{198}{purr}{199}{putter}{200}{raa}{201}{raindance}{202}{ranko}{203}{raspberry}{204}{ready}{205}{redneck}{206}{ribble}{207}{rice}{208}{rofl}{209}{roll}{210}{rose}{211}{ruffle}{212}{rutroh}{213}{salute}{214}{sbomb}{215}{scoff}{216}{scold}{217}{scowl}{218}{scratch}{219}{scream}{220}{scuffle}{221}{scuttle}{222}{seppuku}{223}{shag}{224}{shake}{225}{shame}{226}{shhh}{227}{shi}{228}{ver}{229}{shoo}{230}{shrug}{231}{shudder}}
+#VARIABLE         {strCastCounter}  {4}
+#VARIABLE         {yes}  {#send {yes}}

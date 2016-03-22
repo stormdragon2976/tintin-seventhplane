@@ -1,0 +1,34 @@
+#ACTION {^%i%w tells you, '!ping'$}
+{
+	#if {"$lastPingName" != "%1"}
+	{
+		#line {gag};
+		tell %1 tintin-alteraeon V$tintinAlterAeonVersionNumber by Storm Dragon: http://github.com/stormdragon2976/tintin-alteraeon;
+		| prefix silent_;
+		#variable {lastPingName} {%1}
+	};
+	#else
+	{
+		synth_play tellReceiveSound
+	}
+}
+{8}
+
+#ALIAS {^GET_UUID$}
+{
+	#script {tintinAlterAeonUUID} {if ! [ -f "${HOME}/UUID" ] ; then echo "$(($(date +%s%N)/1000000))" | md5sum | cut -c -10 > "${HOME}/UUID";fi;cat "${HOME}/UUID"};
+	#variable {tintinAlterAeonUUID} {$tintinAlterAeonUUID[1]}
+}
+{9}
+
+#ALIAS {^SHOW_VERSION$}
+{
+	GET_UUID;
+	lecho _gtt++ ${tintinAlterAeonVersionNumber} ${tintinAlterAeonUUID};
+	lecho tintin-alteraeon V$tintinAlterAeonVersionNumber by Storm Dragon: https://github.com/stormdragon2976/tintin-alteraeon
+}
+{9}
+
+#VARIABLE         {lastPingName}  {}
+#VARIABLE         {tintinAlterAeonUUID}  {}
+#VARIABLE         {tintinAlterAeonVersionNumber}          {2016.02.11}

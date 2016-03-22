@@ -1,0 +1,4 @@
+#VARIABLE         {MOTDURL}  {http://stormdragon.tk/scripts/motd.ogg}
+#VARIABLE         {mudAddress}  {7thplane.net}
+#VARIABLE         {mudPort}  {8888}
+#VARIABLE         {mudSessionName}  {The Seventh Plane}
