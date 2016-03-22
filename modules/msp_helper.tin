@@ -1,362 +1,758 @@
-#action {^%S is left behind!$}
+#action {^As you chant, {a mighty tree springs from the ground|the plants around you grow with amazing speed}!$}
 {
-seq_play left-behind
+play ambiance/grow
 }
 {9}
 
-#ACTION {^(friend) %S completed custom job %*}
+#action {^You pull a yellow lightning stone from the ground!$}
 {
-	play friend-complete-quest
+play get/lightning_stone
 }
-{4}
+{9}
 
-#ACTION {^(friend) %S completed quest %*}
+#action {^Your alternate cooldown has ended.$}
 {
-	play friend-complete-quest
-}
-{4}
-
-#ACTION {%1 {reels|reel} in %2 line and {recasts|recast} it.$}
-{
-	play fishing-cast
+synth_play alternateCooldownSound
 }
 {8}
 
-#ACTION {^%S rudely tel{l|ls} %3 to go away.$}
+#action {^You carefully skin the corpse of %*...$}
 {
-	seq_play ditch
+play skills/skin
+}
+{9}
+
+#action {^Your shadowstep cooldown has ended.$}
+{
+#if {"$cspam" == "true"}
+{
+#line {gag}
+};
+revplay skills/shadowstep
 }
 {8}
 
-#ACTION {%1 cleav{es|e} through {its|her|his|your} enemies!$}
+#action {^You shadowstep to %*!$}
 {
-	play cleave
+play skills/shadowstep
 }
 {9}
 
-#ACTION {%1 hook gets caught, forcing {him|her|it} to break the line.$}
+#action {^You are starving!$}
 {
-	play fish-line-break
+play miscellaneous/vampire_starving
+}
+{8}
+
+#action {^You wince and recoil from the sunlight!$}
+{
+play miscellaneous/vampire_hiss
 }
 {9}
 
-#ACTION {%1 is near death!$}
+#action {^You whistle loudly...$}
 {
-	play near-death
+play miscellaneous/whistle
 }
 {9}
 
-#ACTION {%1 {throws out a line and starts|start} fishing.$}
+#action {^You strike a flint set and light %*.$}
 {
-	play fishing-cast
+play miscellaneous/flint_and_steel
 }
 {9}
 
-#ACTION {%1 {traces|trace} fiery glowing symbols in the {air before you|air}...$}
+#action {^You have become $name%*!$}
 {
-	#system {play -qn -V0 synth 00:00:02 $($shuf -n 1 -e "pi" "br") 60 synth $($shuf -n 1 -e "wh" "pi") fmod 60.25 vol 0.2 gain $volume &> /dev/null &}
+play skills/form_normal
 }
 {9}
 
-#ACTION {%1 {traces|trace} symbols in the air, which briefly spark and crackle...$}
+#action {^You have become a {black|brown|cloud of swirling|horrid|sage|savage|towering} {bat|mist|monstrosity|werewolf|wolf}!$}
 {
-	#system {play -qn -V0 synth 00:00:02 $($shuf -n 1 -e "sq" "exp" "tri") 60 synth $($shuf -n 1 -e "sq" "exp") fmod 60.25 vol -.1 gain $volume &> /dev/null &}
+play skills/animal_form_%2
 }
 {9}
 
-#ACTION {%1 {traces|trace} symbols of power, momentarily leaving trails of frost hanging in the air...$}
+#action {^Yo{u|ur} {begin to transform|body warps and distorts painfully}!$}
 {
-	#system {play -qn -V0 synth 2 $($shuf -n 1 -e "wh" "pi" "tp" ) $($shuf -n 1 -e "flanger" "phaser 0.8 0.74 0.5 0.4 0.5") vol 0.2 gain $volume &> /dev/null &}
+play skills/morph
 }
 {9}
 
-#ACTION {%w enters {an|a|the} %3 and disappears.$}
+#action {^You can't enter it from this side. The entrance is from the %w.$}
 {
-	#regexp {%3} {{.*} portal {.*}} {seq_play portal}
+synth_play noEnterSound
 }
 {9}
 
-#ACTION {^ %sThe mud has crashed!  Try again in 30 seconds.}
+#action {^You chant a few mystic words and a portal whirls open!$}
 {
-	play mud-crash
+play miscellaneous/portal
 }
 {9}
 
-#ACTION {^%S ditches you, you feel lost and lonely...$}
+#action {^You don't seem to have more to smelt.$}
 {
-	play ditch
+play skills/work_complete
 }
 {9}
 
-#ACTION {^*{IDLE|TICK}*$}
+#action {^The sun {rises over|slowly disappears beneath} the horizon.$}
 {
-	synth_play audioTickSound;
-	#if {"$audioTick" == "true"}
+#if {"%1" == "rises over"}
+{
+play ambiance/sunrise
+};
+#else
+{
+play ambiance/sunset
+}
+}
+{9}
+
+#action {^You lay a road here.$}
+{
+play craft/rock;
+#if {"$bgm" == "true"}
+{
+look
+}
+}
+{9}
+
+#action {^You toss a shovel-full of dirt out of the trench.$}
+{
+play_norandom skills/dig2
+}
+{9}
+
+#action {^You jab your shovel into the dirt...$}
+{
+play_norandom skills/dig
+}
+{9}
+
+#action {^You {heave a huge stone block into place|put down a layer of bricks}.$}
+{
+play craft/stone
+}
+{9}
+
+#action {^You plant %* and tie %* to stakes.$}
+{
+play skills/tie_plant
+}
+{9}
+
+#action {^It starts to rain.$}
+{
+play weather/rain
+}
+{9}
+
+#action {^%S se{t|ts} up a large beehive.$}
+{
+play craft/beehive
+}
+{9}
+
+#action {^The ground under you shakes violently!$}
+{
+play ambiance/earthquake
+}
+{9}
+
+#action {^You transport to another starting location!$}
+{
+seq_play move/transport
+}
+{9}
+
+#action {^You {hammer nails into the wood joints|nail the wood onto the structure}.$}
+{
+play craft/wood1
+}
+{9}
+
+#action {^You position some {lumber and tie it in place|wood on the structure}.$}
+{
+play craft/tie_wood
+}
+{9}
+
+#action {^You don't seem to have a tree.$}
+{
+play skills/work_complete
+}
+{9}
+
+#action {^You find a small flake of gold!$}
+{
+play get/gold_flake
+}
+{9}
+
+#action {^You carefully place {a|an} %2 in the structure.$}
+{
+#switch {"%2"}
+{
+#case {"iron ingot"} {play craft/metal};
+#case {"rock"} {play craft/rock};
+#default {play craft/wood}
+}
+}
+{9}
+
+#action {^You {complete|finish crafting} %*!$}
+{
+play skills/work_complete;
+#if {"$bgm" == "true" && "%2" == "the construction"}
+{
+look
+}
+}
+{9}
+
+#action {^The searing magical pain proves too much for %*, and {he|it|she} falls over dead!$}
+{
+play magic/death_residual
+}
+{9}
+
+#action {^The residual magic flowing through %* proves too much, and {he|it|she} falls over dead!$}
+{
+play magic/death_residual
+}
+{9}
+
+#action {^You run toward %1!}
+{
+play move/you_run
+}
+{9}
+
+#action {%1 runs toward you!$}
+{
+play move/enemy_run
+}
+{9}
+
+#action {^{A covered wagon|A rickety cart|Something} is pulled%* %w.$}
+{
+seq_play_norandom move/cart_%3
+}
+{9}
+
+#action {^You don't seem to have more to tan.$}
+{
+play skills/work_complete
+}
+{9}
+
+#action {^You have finished planting!$}
+{
+play skills/work_complete;
+#if {"$bgm" == "true"}
+{
+look
+}
+}
+{9}
+
+#action {^You finish harvesting the crop!$}
+{
+play skills/work_complete;
+#if {"$bgm" == "true"}
+{
+look
+}
+}
+{9}
+
+#action {^You store a {pile of gold dust|silver nugget}.$}
+{
+seq_play store/treasure
+}
+{9}
+
+#action {^You mark %1 with a glowing blue skybrand!$}
+{
+rplay magic/skybrand
+}
+{9}
+
+#action {^You {begin scraping|scrape at} a large tree{\.\.\.|\.}$}
+{
+seq_play skills/tree_scrape
+}
+{9}
+
+#action {^You thrust your hand toward %1 and strike {her|him|it} with a powerful bolt of lightning!$}
+{
+rplay magic/lightningbolt
+}
+{9}
+
+#action {^You {brush|soak|stretch} the {raw leather|skin}...$}
+{
+play skills/tan_%1
+}
+{9}
+
+#action {^You {continue|start} cook%*.$}
+{
+play skills/cook
+}
+{9}
+
+#action {^You knead the skin with a foul-smelling mixture...$}
+{
+play skills/tan_kneed
+}
+{9}
+
+#action {^You scrape the skin clean...$}
+{
+play skills/tan_scrape
+}
+{9}
+
+#action {^Lightning starts to show in the sky.$}
+{
+pan_play weather/thunder
+}
+{9}
+
+#action {^You {carefully|finish} {sew|sewing} %3{\.\.\.|!}$}
+{
+play skills/sew
+}
+{9}
+
+#action {^You carefully plant seeds in rows along the ground.$}
+{
+play skills/plant_seed
+}
+{9}
+
+#action {^You water the freshly seeded ground.$}
+{
+play skills/plant_water
+}
+{9}
+
+#action {^You cover the seeds and gently pack the dirt.$}
+{
+play skills/plant_pat
+}
+{9}
+
+#action {^You kneel and begin digging holes to plant %1 here.$}
+{
+play skills/dig
+}
+{8}
+
+#action {^{There is a bright blue glow all around you\.\.\.|A hestian trinket glows a bright blue and the light begins to envelop you!}$}
+{
+play magic/hestian_trinket_teleport
+}
+{9}
+
+#action {^You touch a hestian trinket and it begins to swirl with light...$}
+{
+play magic/hestian_trinket_charge
+}
+{9}
+
+#action {^You finish forging %1!$}
+{
+play skills/complete_forge
+}
+{9}
+
+#action {^You sift through %1, looking for %2...$}
+{
+#if {"$cspam" == "true"}
+{
+#showme {You pan for %2.};
+#line {gag}
+};
+seq_play skills/pan
+}
+{9}
+
+#action {^You kneel down and begin panning at %1.$}
+{
+seq_play skills/pan
+}
+{9}
+
+#action {^You hit %1 on the anvil hard with %2!$}
+{
+play skills/forge
+}
+{9}
+
+#action {^You start forging.$}
+{
+play skills/forge
+}
+{9}
+
+#ACTION {^A fish darts past you, but you narrowly miss it!$}
+{
+	play fail/miss
+}
+{9}
+
+#ACTION {^It splits open!$}
+{
+	play skills/split_rock
+}
+{9}
+
+#ACTION {^Mana twists and swirls around your hand and becomes a fireball!$}
+{
+	play magic/ready_fireball
+}
+{9}
+
+#ACTION {^There's nothing left here to chop.$}
+{
+	play skills/work_complete;
+#if {"$bgm" == "true"}
+{
+look
+}
+}
+{9}
+
+#ACTION {^With a loud crack, the tree falls!$}
+{
+	play get/tree
+}
+{9}
+
+#ACTION {^With that last stroke, {a|some} {copper ore|iron ore|pile of gold dust|nocturnium ore|silver nugget} falls from the wall!$}
+{
+	play get/iron_ore
+}
+{9}
+
+#ACTION {^You are thirsty.$}
+{
+	play health/thirsty
+}
+{9}
+
+#ACTION {^You begin harvesting %*.$}
+{
+	play skills/harvest
+}
+{9}
+
+#ACTION {^You begin to smelt %*.$}
+{
+	seq_play skills/smelt
+}
+{9}
+
+#ACTION {^You brush dust out of the cracks in the stone.$}
+{
+	play skills/dust_stone
+}
+{9}
+
+#ACTION {^You carefully harvest the %*.$}
+{
+	pan_play skills/harvest
+}
+{9}
+
+#ACTION {^You carefully remove %1 from the structure.$}
+{
+	play skills/dismantle
+}
+{9}
+
+#ACTION {^You click your fingers and %1 catches fire!$}
+{
+	play magic/touch_of_flame
+}
+{9}
+
+#ACTION {^You empty %1 of %2.$}
+{
+	play ambiance/empty_liquid
+}
+{9}
+
+#ACTION {^You find {a|a daggerbite|a handfull of|a twig of|a small|an iridescent blue|some|some magewhisper} %*{bileberries|fiveleaf|flower|frond|iris|redthorn|sepals|stick|whitegrass}!$}
+{
+	seq_play get/%3
+}
+{9}
+
+#ACTION {^You finish dismantling the building.$}
+{
+	play skills/complete_dismantle;
+#if {"$bgm" == "true"}
+{
+look
+}
+}
+{9}
+
+#ACTION {^You finish milling a sack of {flour|cornmeal} (x%d)!$}
+{
+	play get/sack
+}
+{9}
+
+#ACTION {^You finish sawing a stack of lumber (x%d).$}
+{
+	play get/lumber
+}
+{9}
+
+#ACTION {^You gently fill %1 from %2.$}
+{
+	play ambiance/liquid_fill
+}
+{9}
+
+#ACTION {^You give the plug drill one final swing and pry loose %1 stone block!$}
+{
+	play get/stone
+}
+{9}
+
+#ACTION {^You grind the millstone, making %*...$}
+{
+	seq_play skills/mill
+}
+{9}
+
+#ACTION {^You have crafted a handaxe!$}
+{
+	play craft/handaxe
+}
+{9}
+
+#ACTION {^You have crafted a stone spear head!$}
+{
+	play craft/spear_head
+}
+{9}
+
+#ACTION {^You have successfully created an iron ingot!$}
+{
+	play get/iron_ingot
+}
+{9}
+
+#ACTION {^You jab your %1 into the water and when you extract it you find %1 on the end!$}
+{
+	play get/fish
+}
+{9}
+
+#ACTION {^You sleep.$}
+{
+	seq_play ambiance/sleep
+}
+{9}
+
+#action {^You sift through some dirt...$}
+{
+	pan_play skills/sift
+}
+{9}
+
+#action {^You pick at the ground a little bit...$}
+{
+	pan_play skills/mine
+}
+{9}
+
+#ACTION {^You pick at the walls with %1, looking for %2.$}
+{
+	pan_play skills/mine
+}
+{9}
+
+#ACTION {^You pull a flint stone from the ground!$}
+{
+	play get/flint_stone
+}
+{9}
+
+#ACTION {^You pull a pile of clay from the ground!$}
+{
+	play get/clay
+}
+{9}
+
+#ACTION {^You pull a rock from the ground!$}
+{
+	play get/rock
+}
+{9}
+
+#ACTION {^You slip some shims into cracks in the stone.$}
+{
+	play skills/shim_stone
+}
+{9}
+
+#ACTION {^You start milling.$}
+{
+	seq_play skills/mill
+}
+{9}
+
+#ACTION {^You store a pile of clay.$}
+{
+	seq_play store/clay
+}
+{9}
+
+#ACTION {^You store a sack of {barley|cornmeal|flour|dried rice}.$}
+{
+	seq_play store/sack
+}
+{9}
+
+#ACTION {^You store a {heavy log|large tree|stack of lumber|stick}.$}
+{
+	seq_play store/lumber
+}
+{9}
+
+#ACTION {^You store an iron ingot.$}
+{
+	seq_play store/metal
+}
+{9}
+
+#ACTION {^You store {a giant linefish|magenta arrowfish|fillet of raw meat|a slab of pork}.$}
+{
+	seq_play store/meat
+}
+{9}
+
+#ACTION {^You swing %1 hard into the tree!$}
+{
+	play skills/chop
+}
+{9}
+
+#ACTION {^You swing back your axe and prepare to chop...$}
+{
+	play skills/ready_axe
+}
+{9}
+
+#ACTION {^You walk through the field, harvesting the %*.$}
+{
+	pan_play skills/harvest
+}
+{9}
+
+#ACTION {^You watch as the metal forms in the fire.$}
+{
+	seq_play skills/smelt
+}
+{9}
+
+#ACTION {^You {begin looking around for sticks|begin looking around|look around for something nice to pick\.\.|search the ground for sticks\.\.}.$}
+{
+	pan_play skills/search
+}
+{9}
+
+#ACTION {^You {begin sawing|saw} %*.$}
+{
+	seq_play skills/saw
+}
+{9}
+
+#ACTION {^You {begin to chip at a handaxe|begin to chip at a chipped rock|begin to chip at a rock|chip away at the piece of rock\.\.}.$}
+{
+	play skills/chip_rock
+}
+{9}
+
+#ACTION {^You {begin to dig into|dig vigorously at} the ground.$}
+{
+	pan_play skills/dig
+}
+{9}
+
+#ACTION {^You {begin to play a lyre|strum at a lyre and hum to the tune|pluck at a lyre}.$}
+{
+	Play_Lyre
+}
+{9}
+
+#ACTION {^You {begin to play a wooden flute|whistle a tune through a wooden flute|play a wooden flute}.$}
+{
+	Play_Flute
+}
+{9}
+
+#ACTION {^You {begin to quarry|hammer a plug drill into} the stone.$}
+{
+	play skills/quarry
+}
+{9}
+
+#ACTION {^You {continue|finish} crafting {a|an|the} %*{\.\.\.|!}$}
+{
+#if {"%1" == "finish"}
+{
+play craft/complete_wood
+};
+#else
+{
+	play craft/wood
+}
+}
+{9}
+
+#ACTION {^You {find|store} a {basket of peaches|bunch of apples}{\.|!}$}
+{
+	#if {"%1" == "find"}
 	{
-		#line {gag}
-	}
-}
-{9}
-
-#ACTION {^A %1 soulstone disappears in a puff of smoke, and you hear demonic laughter all around you.$}
-{
-	play demonic-laughter
-}
-{9}
-
-#ACTION {^A confused looking squirrel scampers up to you, spits out {an|2|3} acor{ns|n}, then runs away.$}
-{
-	#if {"%1" == "an"}
-	{
-		play animal_calls/acorn-1
+		play get/fruit
 	};
 	#else
 	{
-		play animal_calls/acorn-%1
+		seq_play store/fruit
 	}
 }
 {9}
 
-#ACTION {^A deadly mist begins rising from %* body...$}
+#ACTION {^You%* {drink|eat} %*.$}
 {
-	play dying-breath-release
+	seq_play health/%2
 }
 {9}
 
-#ACTION {^A fissure opens up in the ground beneath a %1 soulstone and swallows it up!$}
+#ACTION {^{Huh\?!\?|In your dreams, or what\?|There is no help on that word\.|You aren't using the proper tool for that\.|There is no room for more\.}$}
 {
-	play demonic-laughter
-}
-{9}
-
-#ACTION {^A ghoul bites %1 with diseased, razor sharp teeth!$}
-{
-	play ghoul-attack
-}
-{9}
-
-#ACTION {^A ghoul jumps at %1 clawing and biting!$}
-{
-	play ghoul-attack
-}
-{9}
-
-#ACTION {^A ghoul rips and tears into %1 with filthy, diseased claws!$}
-{
-	play ghoul-attack
-}
-{9}
-
-#ACTION {^A pile of gold coins.$}
-{
-	seq_play gold-coins
-}
-{9}
-
-#ACTION {^A shadow fiend has left the group.$}
-{
-	play shadow-fiend-leave
-}
-{9}
-
-#ACTION {^A small clawed hand reaches up through the ground, grabs a %1 soulstone, and vanishes.$}
-{
-	play demonic-laughter
-}
-{9}
-
-#ACTION {^A zombie gnaws hungrily on %1 with filthy, rotten teeth.$}
-{
-	play ghoul-attack
-}
-{9}
-
-#ACTION {^PANIC!!  You couldn't escape!$}
-{
-	play bump
-}
-{9}
-
-#ACTION {^The bones splinter and shatter, leaving behind only broken pieces.$}
-{
-	play bone-guardian-death
-}
-{9}
-
-#ACTION {^The corpse of %* is lying here.$}
-{
-	seq_play corpse
-}
-{9}
-
-#ACTION {^The fish is too big for your line, and it snaps!$}
-{
-	play fish-line-break
-}
-{9}
-
-#ACTION {^The gods penalize you for botting!$}
-{
-	synth_play attention
-}
-{9}
-
-#ACTION {^The kill is close! With a blood chilling howl you dash off to join the hunt.$}
-{
-	play mobs/animal_wolf_alert
-}
-{9}
-
-#ACTION {^The light above the wizard's shop flickers for an instant, looks like it needs maintenance.$}
-{
-	play wizard-shop-light
-}
-{9}
-
-#ACTION {^Today was the%1largest daily userload!  Thanks for playing!$}
-{
-	synth_play userloadSound
-}
-{9}
-
-#ACTION {^You are fully healed.$}
-{
-	play healing-touch-complete
-}
-{9}
-
-#ACTION {^You can feel your green skin soaking up the precious sunlight.$}
-{
-	play sun-absorb
-}
-{9}
-
-#ACTION {^You feel a sense of great loss, but you are unsure why.$}
-{
-	play suppression
-}
-{9}
-
-#ACTION {^You feel invigorated and stronger!$}
-{
-	play trollsblut
-}
-{9}
-
-#ACTION {^You feel that your god requires a sacrifice...$}
-{
-	play required-sacrifice
-}
-{9}
-
-#ACTION {^You feel your enhanced courage fading.$}
-{
-	play valor-drop
-}
-{9}
-
-#ACTION {^You gain a practice!$}
-{
-	play train-practice
-}
-{9}
-
-#ACTION {^You guide the spell directly toward %1!$}
-{
-	#system {play -qn -V0 synth $($shuf -n 1 -e "wh" "pi" "tp" ) $($shuf -n 1 -e "flanger" "phaser 0.8 0.74 0.5 0.4 0.5") vol 0.2 fade 0 1.19 0.3 gain $volume &> /dev/null &}
-}
-{9}
-
-#ACTION {^You have toiled long enough. You now follow %S!$}
-{
-	play convert-to-god-complete
-}
-{9}
-
-#ACTION {^You hear the loud -clang- *CLANG* of a hammer on anvil to the north.$}
-{
-	play hammer-on-anvil
-}
-{9}
-
-#ACTION {^You spend %d {experience|gold coins} to give%*}
-{
-	#if {"%2" == "experience"}
+	#if {"%0" == "In your dreams, or what?"}
 	{
-		synth_play giftExp
+		#variable {rememberCoordinates} {false}
 	};
-	#else
-	{
-		synth_play giftGold
-	}
+	play fail/error
 }
 {9}
 
-#ACTION {^You suddenly see your mistake, reverse the incantation and sacrifice a %1 soulstone.$}
+#ACTION {^{there's|You can't find} {anything|nothing} {here left|left here} to {chop|pick}.$}
 {
-	play demonic-laugh
+	play fail/nothing
 }
 {9}
-
-#ACTION {^You summon A shadow fiend, and your offering of %1 is accepted.$}
-{
-	play summon-shadow-fiend
-}
-{9}
-
-#ACTION {^You taunt %1, and {she|he|it} attacks you!$}
-{
-	play taunt
-}
-{9}
-
-#ACTION {^You're the first to submit this recipe!$}
-{
-	play new-potion
-}
-{9}
-
-#ACTION {^Your chosen god awaits another sacrifice.$}
-{
-	play required-sacrifice
-}
-{9}
-
-#ACTION {^Your chosen god is becoming uninterested in your sacrifices.$}
-{
-	play required-sacrifice
-}
-{9}
-
-#ACTION {^Your skin turns green and you sprout a couple of leafy shoots.$}
-{
-	play sundrinker
-}
-{9}
-
-#ACTION {^mobrepop_%1->%2}
-{
-	#unvariable {mobRepop};
-	#showme {%1->%2};
-	play repop
-}
-{9}
-
-#ACTION {^{A|An} %1 comes into view, answering %S call!$}
-{
-	#variable {mspHelperFormatString} {%1};
-	#replace {mspHelperFormatString} { } {-};
-	play animal_calls/$mspHelperFormatString
-}
-{9}
-
-#ACTION {^{stealing_You|You} happen to find %d gold coins, how fortunate!$}
-{
-	#if {%2 > 20}
-	{
-		play pickpocket
-	}
-}
-{9}
-
-#VARIABLE         {mspHelperFormatString}   {}
